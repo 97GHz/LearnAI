@@ -25,8 +25,8 @@ if __name__ == '__main__':
 
     x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     y = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-    w = [random.uniform(-1, 1)]
-    b = [random.uniform(-1, 1)]
+    w = [random.uniform(-3, 3)]
+    b = [random.uniform(-3, 3)]
     cost = [0]
     learningRate = [0.001]
 

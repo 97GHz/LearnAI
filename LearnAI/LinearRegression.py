@@ -3,10 +3,12 @@ import copy
 import numpy as np
 from PyQt5.QtWidgets import *
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FC
 
 (GUI_X, GUI_Y, GUI_W, GUI_H) = (200, 200, 800, 600)
 GUI_TITLE = "Linear Regression"
+COMBO_BOX_TITLE = ['H(x) = Wx+B Graph', 'Cost(W,B) Graph']
 
 
 def is_float(input):
@@ -30,7 +32,14 @@ class LinearRegression(QWidget):
         self.fig = plt.Figure()
         self.canvas = FC(self.fig)
 
-        layout = QHBoxLayout()
+        layout = QVBoxLayout()
+        graphComboBox = QComboBox()
+        for title in COMBO_BOX_TITLE:
+            graphComboBox.addItem(title)
+        graphComboBox.currentIndexChanged.connect(self.updateScreen)
+        self.graphComboBox = graphComboBox
+
+        contentLayout = QHBoxLayout()
         toolBox = QVBoxLayout()
 
         infoBrowser = QTextBrowser()
@@ -53,14 +62,18 @@ class LinearRegression(QWidget):
         toolBox.addLayout(learningRateBox)
         toolBox.addWidget(nextBtn)
 
-        layout.addWidget(self.canvas)
-        layout.addLayout(toolBox)
+        contentLayout.addWidget(self.canvas)
+        contentLayout.addLayout(toolBox)
+
+        layout.addLayout(contentLayout)
+        layout.addWidget(graphComboBox)
 
         self.layout = layout
         self.setLayout(self.layout)
 
     def initParameter(self):
         self.count = 0
+        self.comboText = COMBO_BOX_TITLE[0]
 
     def connectParameter(self, x, y, w, b, cost, learningRate):
         self.x = x
@@ -87,19 +100,38 @@ class LinearRegression(QWidget):
 
     def updateGraph(self):
         self.fig.clear()
+        if self.graphComboBox.currentIndex() == 0:
+            x = np.asarray(self.x, dtype=np.float32)
+            y = np.asarray(self.y, dtype=np.float32)
 
-        x = np.asarray(self.x, dtype=np.float32)
-        y = np.asarray(self.y, dtype=np.float32)
+            y_bar = self.w[0] * x + self.b[0]
 
-        y_bar = self.w[0] * x + self.b[0]
+            ax = self.fig.add_subplot(111)
+            ax.scatter(x, y)
+            ax.plot(x, y_bar)
 
-        ax = self.fig.add_subplot(111)
-        ax.scatter(x, y)
-        ax.plot(x, y_bar)
+            ax.set_xlabel("x")
+            ax.set_xlabel("y")
+            ax.set_title(GUI_TITLE)
 
-        ax.set_xlabel("x")
-        ax.set_xlabel("y")
-        ax.set_title(GUI_TITLE)
+        elif self.graphComboBox.currentIndex() == 1:
+            W = np.arange(-5, 5, 0.1)
+            B = np.arange(-5, 5, 0.1)
+            W, B = np.meshgrid(W, B)
+            C = np.zeros((100, 100))
+
+            for (x, y) in zip(self.x, self.y):
+                C += (W*x + B - y)**2
+            C /= len(self.x)
+
+            ax = self.fig.gca(projection='3d')
+            ax.plot_wireframe(W, B, C, color='black')
+            ax.plot(self.w, self.b, 'ro')
+            ax.set_xlabel('W axis')
+            ax.set_ylabel('B axis')
+            ax.set_zlabel('Cost axis')
+            ax.set_title(GUI_TITLE)
+
         self.canvas.draw()
 
     def updateScreen(self):
