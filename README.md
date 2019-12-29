@@ -1,8 +1,16 @@
 # LearnAI
 
-## You do not need to make User Interface
-## All parameters are chained on Python Module
-## Just Change parameters and code your own Cost Function
+## You only need to Control Parameters and Code your Cost Function
+
+### You must install modules below
+  ```
+  pip install PyQt5
+  pip install numpy
+  pip install matplotlib
+  ```
+
+------------------------
+### Available Modules and Samples
 
 1. Linear Regression
 <img src="./img/LinearRegression1.png">
