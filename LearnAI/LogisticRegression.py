@@ -7,8 +7,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FC
 
 (GUI_X, GUI_Y, GUI_W, GUI_H) = (200, 200, 800, 600)
-GUI_TITLE = "Linear Regression"
-COMBO_BOX_TITLE = ['H(x) = Wx+B Graph', 'Cost(W,B) Graph']
+GUI_TITLE = "Logistic Regression"
+COMBO_BOX_TITLE = ['G(x) = sig(Wx+B) Graph', 'Cost(W,B) Graph']
 
 
 def isFloat(input):
@@ -19,7 +19,11 @@ def isFloat(input):
     return True
 
 
-class LinearRegression(QWidget):
+def sigmoid(z):
+    return 1.0 / (1.0 + np.exp(-z))
+
+
+class LogisticRegression(QWidget):
     def __init__(self):
         super().__init__()
         self.initParameter()
@@ -104,10 +108,11 @@ class LinearRegression(QWidget):
             y = np.asarray(self.y, dtype=np.float32)
 
             y_bar = self.w[0] * x + self.b[0]
+            h = 1.0 / (1.0 + np.exp(-y_bar))
 
             ax = self.fig.add_subplot(111)
             ax.scatter(x, y)
-            ax.plot(x, y_bar)
+            ax.plot(x, h)
 
             ax.set_xlabel("x")
             ax.set_xlabel("y")
@@ -121,7 +126,10 @@ class LinearRegression(QWidget):
             C = np.zeros((50, 50))
 
             for (x, y) in zip(self.x, self.y):
-                C += (W*x + B - y)**2
+                if y == 0:
+                    C -= np.log(1-sigmoid(W*x+B))
+                else:
+                    C -= np.log(sigmoid(W*x+B))
             C /= len(self.x)
 
             ax = self.fig.gca(projection='3d')

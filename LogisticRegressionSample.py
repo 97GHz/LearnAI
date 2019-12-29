@@ -2,17 +2,28 @@ import sys
 import math
 import random
 from PyQt5.QtWidgets import *
-from LearnAI.LinearRegression import LinearRegression
+from LearnAI.LogisticRegression import LogisticRegression
+
+
+def sigmoid(z):
+    return 1.0/(1.0+math.exp(-z))
 
 
 def Calc():
-    aw = 0
-    ab = 0
+    aw = 0.0
+    ab = 0.0
     cost[0] = 0
     for (xi, yi) in zip(x, y):
-        aw += (w[0] * xi + b[0] - yi) * xi
-        ab += (w[0] * xi + b[0] - yi)
-        cost[0] += (w[0] * xi + b[0] - yi) ** 2
+        z = w[0]*xi+b[0]
+        s = sigmoid(z)
+        if yi == 0:
+            aw += s*xi
+            ab += s
+            cost[0] -= math.log(1-s)
+        else:
+            aw -= (1-s)*xi
+            ab -= (1-s)
+            cost[0] -= math.log(s)
     aw /= len(x)
     ab /= len(x)
     cost[0] /= len(x)
@@ -26,13 +37,13 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    y = [2, 4, 5, 7, 10, 12, 14, 17, 18, 20]
+    y = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
     w = [random.uniform(-3, 3)]
     b = [random.uniform(-3, 3)]
     cost = [0]
-    learningRate = [0.001]
+    learningRate = [0.1]
 
-    reg = LinearRegression()
+    reg = LogisticRegression()
     reg.setClickEvent(Calc)
     reg.connectParameter(x, y, w, b, cost, learningRate)
 
