@@ -4,9 +4,9 @@
 
 ### You must install modules below
   ```
-  pip install PyQt5
-  pip install numpy
-  pip install matplotlib
+  pip install PyQt5         # User Interface Tool
+  pip install numpy         # Mathematical Tool
+  pip install matplotlib    # Graph Visualization Tool
   ```
 
 ------------------------
@@ -20,4 +20,6 @@
 <img src="./img/LogisticRegression1.png">
 <img src="./img/LogisticRegression2.png">
 
-3. Logistic Classification
+3. Decision Tree
+<img src="./img/DecisionTree1.png">
+<img src="./img/DecisionTree2.png">
