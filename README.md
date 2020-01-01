@@ -23,3 +23,6 @@
 3. Decision Tree
 <img src="./img/DecisionTree1.png">
 <img src="./img/DecisionTree2.png">
+
+4. Perceptron
+<img src="./img/Perceptron.png">
